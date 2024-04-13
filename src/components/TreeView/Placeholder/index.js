@@ -1,8 +1,6 @@
 import React from "react";
-import { NodeModel } from "@minoru/react-dnd-treeview";
-import styles from "./styles.module.css";
 
-const Placeholder = ({ node, depth }) => {
+const Placeholder = ({ depth }) => {
   return (
     <div
       style={{
@@ -13,7 +11,7 @@ const Placeholder = ({ node, depth }) => {
         left: depth * 24,
         transform: "translateY(-50%)",
         backgroundColor: "#81a9e0",
-        zIndex: 100
+        zIndex: 100,
       }}
     />
   );

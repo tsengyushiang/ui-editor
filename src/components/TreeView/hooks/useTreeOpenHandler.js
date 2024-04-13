@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  getDescendants,
-  NodeModel,
-  TreeMethods
-} from "@minoru/react-dnd-treeview";
+import { getDescendants } from "@minoru/react-dnd-treeview";
 
 const useTreeOpenHandler = () => {
   const ref = React.useRef(null);
