@@ -17,6 +17,7 @@ const Node = ({
   onClick,
   treeData,
   getPipeHeight,
+  children,
 }) => {
   const indent = depth * TREE_X_OFFSET;
 
@@ -65,7 +66,7 @@ const Node = ({
           }}
         />
       )}
-      <div className={styles.labelGridItem}>{node.text}</div>
+      <div className={styles.labelGridItem}> {children}</div>
 
       <>
         <div>
