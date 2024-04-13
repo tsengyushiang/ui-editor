@@ -1,7 +1,6 @@
 import { useState } from "react";
 import TreeView from "./components/TreeView";
 import Typography from "@mui/material/Typography";
-import { v4 as uuidv4 } from "uuid";
 
 const NodeTypes = (() => {
   const TYPES = {
@@ -42,7 +41,7 @@ const NodeTypes = (() => {
       const descendants = [
         {
           ...types[0],
-          id: uuidv4(),
+          id: `${id}_child`,
           parent: id,
         },
       ];
@@ -50,13 +49,13 @@ const NodeTypes = (() => {
     }
   };
 
-  const Renderer = ({ data: { type } }) => {
+  const Renderer = ({ id, data: { type } }) => {
     if (type === TYPES.COMPONENT) {
-      return <Typography variant="body2">Component</Typography>;
+      return <Typography variant="body2">{`component(${id})`}</Typography>;
     }
 
     if (type === TYPES.CONTAINER) {
-      return <Typography variant="body2">Container</Typography>;
+      return <Typography variant="body2">{`container(${id})`}</Typography>;
     }
 
     return `${type} not found`;
