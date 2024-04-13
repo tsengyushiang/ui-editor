@@ -58,7 +58,7 @@ const duplicateNode = (tree, id) => {
   return copyTree;
 };
 
-const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
+const TreeView = ({ nodeTypes, nodeRenderer, nodeCreator, tree, setTree }) => {
   const { ref, getPipeHeight, toggle } = useTreeOpenHandler();
   const handleDrop = (_, options) => {
     const { dropTargetId, destinationIndex, monitor } = options;
@@ -70,11 +70,15 @@ const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
       const itemType = monitor.getItemType();
       if (itemType === NativeTypes.TEXT) {
         const nodeJson = monitor.getItem().text;
-        const node = JSON.parse(nodeJson);
-        node.id = uuidv4();
-        node.parent = 0;
+        const newId = uuidv4();
+        const { node, descendants } = nodeCreator(
+          JSON.parse(nodeJson),
+          newId,
+          0
+        );
         dragSourceId = node.id;
         treeData.push(node);
+        treeData.push(...descendants);
       }
 
       const start = treeData.find((v) => v.id === dragSourceId);
