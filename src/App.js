@@ -14,24 +14,6 @@ import useTreeOpenHandler from "./useTreeOpenHandler";
 import styles from "./styles.module.css";
 import { ExternalNode } from "./ExternalNode.js";
 
-const getLastId = (treeData) => {
-  const reversedArray = [...treeData].sort((a, b) => {
-    if (a.id < b.id) {
-      return 1;
-    } else if (a.id > b.id) {
-      return -1;
-    }
-
-    return 0;
-  });
-
-  if (reversedArray.length > 0) {
-    return reversedArray[0].id;
-  }
-
-  return 0;
-};
-
 const reorderArray = (array, sourceIndex, targetIndex) => {
   const newArray = [...array];
   const element = newArray.splice(sourceIndex, 1)[0];
@@ -122,22 +104,35 @@ export default function App() {
   };
 
   const handleCopy = (id) => {
-    const lastId = getLastId(tree);
     const targetNode = tree.find((n) => n.id === id);
     const descendants = getDescendants(tree, id);
-    const partialTree = descendants.map((node) => ({
-      ...node,
-      id: node.id + lastId,
-      parent: node.parent + lastId,
-    }));
+    const idMap = {
+      [id]: uuidv4(),
+    };
+    const newDescendants = [];
+    while (descendants.length) {
+      const node = descendants.shift();
+      if (idMap[node.parent] !== undefined) {
+        const oldId = node.id;
+        const newId = uuidv4();
+        newDescendants.push({
+          ...node,
+          id: newId,
+          parent: idMap[node.parent],
+        });
+        idMap[oldId] = newId;
+      } else {
+        descendants.push(descendants);
+      }
+    }
 
     setTree([
       ...tree,
       {
         ...targetNode,
-        id: targetNode.id + lastId,
+        id: idMap[id],
       },
-      ...partialTree,
+      ...newDescendants,
     ]);
   };
 
