@@ -52,24 +52,27 @@ const NodeTypes = (() => {
   return { Renderer, types };
 })();
 
+const deepCopy = (data) => JSON.parse(JSON.stringify(data));
+
 const App = () => {
   const [historyIndex, setHistoryIndex] = useState(0);
   const [history, setHistory] = useState([[]]);
   const [tree, setTree] = useState([]);
 
   const setNewTree = (newTree) => {
-    const validHistory = history.splice(0, historyIndex + 1);
-    setHistory([...validHistory, newTree]);
+    const validHistory = deepCopy(history).slice(0, historyIndex + 1);
+    const newHistory = [...validHistory, deepCopy(newTree)];
+    setHistory(newHistory);
     setHistoryIndex((prev) => prev + 1);
     setTree(newTree);
   };
 
   const revert = () => {
-    setTree(history[historyIndex - 1]);
+    setTree(deepCopy(history[historyIndex - 1]));
     setHistoryIndex((prev) => prev - 1);
   };
   const restore = () => {
-    setTree(history[historyIndex + 1]);
+    setTree(deepCopy(history[historyIndex + 1]));
     setHistoryIndex((prev) => prev + 1);
   };
 
