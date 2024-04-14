@@ -13,32 +13,33 @@ const NodeTypes = (() => {
   const types = [
     {
       id: "component",
-      text: "component",
       parent: 0,
-      data: {
-        type: TYPES.COMPONENT,
-      },
+      type: TYPES.COMPONENT,
     },
     {
       id: "container",
-      droppable: true,
-      text: "container",
       parent: 0,
-      data: {
-        type: TYPES.CONTAINER,
-      },
+      type: TYPES.CONTAINER,
     },
     {
       id: "container_child",
-      text: "container_child",
       parent: "container",
-      data: {
-        type: TYPES.COMPONENT,
-      },
+      type: TYPES.COMPONENT,
     },
   ];
 
-  const Renderer = ({ id, data: { type } }) => {
+  const droppableTypes = [TYPES.CONTAINER];
+  const getNodeOptions = (node) => {
+    if (!node) return null;
+    const newNode = {
+      ...node,
+      droppable: droppableTypes.includes(node.type),
+      text: node.id,
+    };
+    return newNode;
+  };
+
+  const Renderer = ({ id, type }) => {
     if (type === TYPES.COMPONENT) {
       return <Typography variant="body2">{`component(${id})`}</Typography>;
     }
@@ -50,7 +51,7 @@ const NodeTypes = (() => {
     return `${type} not found`;
   };
 
-  return { Renderer, types };
+  return { Renderer, getNodeOptions, types };
 })();
 
 const deepCopy = (data) => JSON.parse(JSON.stringify(data));
@@ -86,6 +87,7 @@ const App = () => {
       <TreeView
         nodeTypes={NodeTypes.types}
         nodeRenderer={NodeTypes.Renderer}
+        getNodeOptions={NodeTypes.getNodeOptions}
         tree={tree}
         setTree={setNewTree}
       />
