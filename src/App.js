@@ -10,44 +10,31 @@ const NodeTypes = (() => {
 
   const types = [
     {
-      id: "text",
+      id: "component",
       text: "component",
+      parent: 0,
       data: {
         type: TYPES.COMPONENT,
       },
     },
     {
-      id: "dropMenu",
+      id: "container",
       droppable: true,
       text: "container",
+      parent: 0,
       data: {
         type: TYPES.CONTAINER,
       },
     },
+    {
+      id: "container_child",
+      text: "container_child",
+      parent: "container",
+      data: {
+        type: TYPES.COMPONENT,
+      },
+    },
   ];
-
-  const Creator = (node, id, parent) => {
-    const {
-      data: { type },
-    } = node;
-    if (type === TYPES.COMPONENT) {
-      const newNode = { ...node, id, parent };
-      const descendants = [];
-      return { node: newNode, descendants };
-    }
-
-    if (type === TYPES.CONTAINER) {
-      const newNode = { ...node, id, parent };
-      const descendants = [
-        {
-          ...types[0],
-          id: `${id}_child`,
-          parent: id,
-        },
-      ];
-      return { node: newNode, descendants };
-    }
-  };
 
   const Renderer = ({ id, data: { type } }) => {
     if (type === TYPES.COMPONENT) {
@@ -61,7 +48,7 @@ const NodeTypes = (() => {
     return `${type} not found`;
   };
 
-  return { Renderer, Creator, types };
+  return { Renderer, types };
 })();
 
 const App = () => {
@@ -71,7 +58,6 @@ const App = () => {
     <TreeView
       nodeTypes={NodeTypes.types}
       nodeRenderer={NodeTypes.Renderer}
-      nodeCreator={NodeTypes.Creator}
       tree={tree}
       setTree={setTree}
     />

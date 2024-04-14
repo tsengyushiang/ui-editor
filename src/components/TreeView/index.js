@@ -27,25 +27,24 @@ const deleteNode = (tree, id) => {
   return newTree;
 };
 
-const duplicateNode = (tree, id) => {
-  const copyTree = [...tree];
-  let targetIndex = tree.findIndex((n) => n.id === id);
-  const targetNode = tree[targetIndex];
-  const descendants = getDescendants(tree, id);
+const duplicateSubTree = (tree, rootId) => {
+  const targetNode = tree.find((n) => n.id === rootId);
+  const descendants = getDescendants(tree, rootId);
   const idMap = {
-    [id]: uuidv4(),
+    [rootId]: uuidv4(),
   };
 
-  copyTree.splice(++targetIndex, 0, {
+  const newSubTree = [];
+  newSubTree.push({
     ...targetNode,
-    id: idMap[id],
+    id: idMap[rootId],
   });
   while (descendants.length) {
     const node = descendants.shift();
     if (idMap[node.parent] !== undefined) {
       const oldId = node.id;
       const newId = uuidv4();
-      copyTree.splice(++targetIndex, 0, {
+      newSubTree.push({
         ...node,
         id: newId,
         parent: idMap[node.parent],
@@ -55,10 +54,10 @@ const duplicateNode = (tree, id) => {
       descendants.push(descendants);
     }
   }
-  return copyTree;
+  return newSubTree;
 };
 
-const TreeView = ({ nodeTypes, nodeRenderer, nodeCreator, tree, setTree }) => {
+const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
   const { ref, getPipeHeight, toggle } = useTreeOpenHandler();
   const handleDrop = (_, options) => {
     const { dropTargetId, destinationIndex, monitor } = options;
@@ -70,15 +69,10 @@ const TreeView = ({ nodeTypes, nodeRenderer, nodeCreator, tree, setTree }) => {
       const itemType = monitor.getItemType();
       if (itemType === NativeTypes.TEXT) {
         const nodeJson = monitor.getItem().text;
-        const newId = uuidv4();
-        const { node, descendants } = nodeCreator(
-          JSON.parse(nodeJson),
-          newId,
-          0
-        );
-        dragSourceId = node.id;
-        treeData.push(node);
-        treeData.push(...descendants);
+        const target = JSON.parse(nodeJson);
+        const newSubTree = duplicateSubTree(nodeTypes, target.id);
+        dragSourceId = newSubTree[0].id;
+        treeData.push(...newSubTree);
       }
 
       const start = treeData.find((v) => v.id === dragSourceId);
@@ -130,7 +124,10 @@ const TreeView = ({ nodeTypes, nodeRenderer, nodeCreator, tree, setTree }) => {
   };
 
   const handleCopy = (id) => {
-    const newTree = duplicateNode(tree, id);
+    const targetIndex = tree.findIndex((n) => n.id === id);
+    const newSubTree = duplicateSubTree(tree, id);
+    const newTree = [...tree];
+    newTree.splice(targetIndex + 1, 0, ...newSubTree);
     setTree(newTree);
   };
 
@@ -139,11 +136,14 @@ const TreeView = ({ nodeTypes, nodeRenderer, nodeCreator, tree, setTree }) => {
   return (
     <div>
       <div className={styles.treeRoot}>
-        {nodeTypes.map((node) => (
-          <ExternalNode key={node.id} node={node}>
-            <NodeRenderer {...node} />
-          </ExternalNode>
-        ))}
+        {nodeTypes.map((node) => {
+          if (node.parent !== 0) return null;
+          return (
+            <ExternalNode key={node.id} node={node}>
+              <NodeRenderer {...node} />
+            </ExternalNode>
+          );
+        })}
       </div>
       <DndProvider backend={MultiBackend} options={getBackendOptions()}>
         <div className={styles.wrapper}>
