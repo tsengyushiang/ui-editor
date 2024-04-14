@@ -1,7 +1,8 @@
 import { useState } from "react";
 import TreeView from "./components/TreeView";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const NodeTypes = (() => {
   const TYPES = {
@@ -78,22 +79,16 @@ const App = () => {
 
   return (
     <>
+      {historyIndex > 0 && <KeyboardArrowLeftIcon onClick={revert} />}
+      {historyIndex !== history.length - 1 && (
+        <KeyboardArrowRightIcon onClick={restore} />
+      )}
       <TreeView
         nodeTypes={NodeTypes.types}
         nodeRenderer={NodeTypes.Renderer}
         tree={tree}
         setTree={setNewTree}
       />
-      {historyIndex > 0 && (
-        <Button variant="contained" onClick={revert}>
-          revert
-        </Button>
-      )}
-      {historyIndex !== history.length - 1 && (
-        <Button variant="contained" onClick={restore}>
-          restore
-        </Button>
-      )}
     </>
   );
 };

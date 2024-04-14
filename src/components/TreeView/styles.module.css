@@ -59,7 +59,7 @@
 
 .wrapper {
   font-family: sans-serif;
-  padding: 20px;
+  flex: 1;
 }
 
 .treeRoot {
@@ -68,6 +68,7 @@
   padding: 10px;
   position: relative;
   border-radius: 5px;
+  margin: 0px;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
@@ -97,4 +98,9 @@
 .wrapper li:has(> .dropTarget) {
   outline: 3px solid #e8f0fe;
   border-radius: 4px;
+}
+
+.treeView {
+  display: flex;
+  gap: 10px;
 }

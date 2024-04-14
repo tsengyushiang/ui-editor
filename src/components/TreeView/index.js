@@ -11,7 +11,7 @@ import React from "react";
 import Node from "./Node";
 import Placeholder from "./Placeholder";
 import useTreeOpenHandler from "./hooks/useTreeOpenHandler";
-import styles from "../../styles.module.css";
+import styles from "./styles.module.css";
 import { ExternalNode } from "./ExternalNode";
 
 const reorderArray = (array, sourceIndex, targetIndex) => {
@@ -134,7 +134,7 @@ const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
   const NodeRenderer = nodeRenderer;
 
   return (
-    <div>
+    <div className={styles.treeView}>
       <div className={styles.treeRoot}>
         {nodeTypes.map((node) => {
           if (node.parent !== 0) return null;

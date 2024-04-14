@@ -1,6 +1,6 @@
 import React from "react";
 import { getDescendants, useDragOver } from "@minoru/react-dnd-treeview";
-import styles from "../../../styles.module.css";
+import styles from "../styles.module.css";
 import IconButton from "@mui/material/IconButton";
 import { Delete, FileCopy } from "@mui/icons-material";
 
