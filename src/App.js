@@ -92,14 +92,7 @@ const App = () => {
         tree={tree}
         setTree={setNewTree}
       />
-      <Table
-        data={tree.map((node) => [
-          node.id,
-          node.parent,
-          node.data.type,
-          node.text,
-        ])}
-      />
+      <Table data={tree.map((node) => [node.id, node.parent, node.type])} />
     </>
   );
 };
