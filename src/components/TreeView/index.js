@@ -57,7 +57,13 @@ const duplicateSubTree = (tree, rootId) => {
   return newSubTree;
 };
 
-const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
+const TreeView = ({
+  nodeTypes,
+  nodeRenderer,
+  getNodeOptions,
+  tree,
+  setTree,
+}) => {
   const { ref, getPipeHeight, toggle } = useTreeOpenHandler();
   const handleDrop = (_, options) => {
     const { dropTargetId, destinationIndex, monitor } = options;
@@ -77,7 +83,12 @@ const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
 
       const start = treeData.find((v) => v.id === dragSourceId);
       const end = treeData.find((v) => v.id === dropTargetId);
-      return { start, end, treeData, dragSourceId };
+      return {
+        start,
+        end,
+        treeData,
+        dragSourceId,
+      };
     })();
 
     if (
@@ -103,7 +114,7 @@ const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
           (el) => el.id === dropTargetId
         ) ||
         dropTargetId === dragSourceId ||
-        (end && !end?.droppable)
+        (end && !getNodeOptions(end)?.droppable)
       )
         return;
 
@@ -132,7 +143,7 @@ const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
   };
 
   const NodeRenderer = nodeRenderer;
-
+  const treeDetail = tree.map((node) => getNodeOptions(node));
   return (
     <div className={styles.treeView}>
       <div className={styles.treeRoot}>
@@ -155,7 +166,7 @@ const TreeView = ({ nodeTypes, nodeRenderer, tree, setTree }) => {
               dropTarget: styles.dropTarget,
               listItem: styles.listItem,
             }}
-            tree={tree}
+            tree={treeDetail}
             extraAcceptTypes={[NativeTypes.TEXT]}
             sort={false}
             rootId={0}
