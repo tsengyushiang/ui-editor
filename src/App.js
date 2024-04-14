@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TreeView from "./components/TreeView";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 const NodeTypes = (() => {
   const TYPES = {
@@ -52,15 +53,45 @@ const NodeTypes = (() => {
 })();
 
 const App = () => {
+  const [historyIndex, setHistoryIndex] = useState(0);
+  const [history, setHistory] = useState([[]]);
   const [tree, setTree] = useState([]);
 
+  const setNewTree = (newTree) => {
+    const validHistory = history.splice(0, historyIndex + 1);
+    setHistory([...validHistory, newTree]);
+    setHistoryIndex((prev) => prev + 1);
+    setTree(newTree);
+  };
+
+  const revert = () => {
+    setTree(history[historyIndex - 1]);
+    setHistoryIndex((prev) => prev - 1);
+  };
+  const restore = () => {
+    setTree(history[historyIndex + 1]);
+    setHistoryIndex((prev) => prev + 1);
+  };
+
   return (
-    <TreeView
-      nodeTypes={NodeTypes.types}
-      nodeRenderer={NodeTypes.Renderer}
-      tree={tree}
-      setTree={setTree}
-    />
+    <>
+      <TreeView
+        nodeTypes={NodeTypes.types}
+        nodeRenderer={NodeTypes.Renderer}
+        tree={tree}
+        setTree={setNewTree}
+      />
+      {historyIndex > 0 && (
+        <Button variant="contained" onClick={revert}>
+          revert
+        </Button>
+      )}
+      {historyIndex !== history.length - 1 && (
+        <Button variant="contained" onClick={restore}>
+          restore
+        </Button>
+      )}
+    </>
   );
 };
 
