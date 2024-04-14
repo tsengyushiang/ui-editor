@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TreeView from "./components/TreeView";
+import Table from "./components/Table";
 import Typography from "@mui/material/Typography";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -88,6 +89,14 @@ const App = () => {
         nodeRenderer={NodeTypes.Renderer}
         tree={tree}
         setTree={setNewTree}
+      />
+      <Table
+        data={tree.map((node) => [
+          node.id,
+          node.parent,
+          node.data.type,
+          node.text,
+        ])}
       />
     </>
   );
