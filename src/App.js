@@ -5,6 +5,32 @@ import Typography from "@mui/material/Typography";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
+const sortTreeNodes = (newTree) => {
+  const parentChildDict = newTree.reduce((prev, node) => {
+    const target = prev.find((dict) => dict.parent === node.parent);
+    if (target) {
+      target.children.push(node);
+    } else {
+      prev.push({
+        parent: node.parent,
+        children: [node],
+      });
+    }
+    return prev;
+  }, []);
+  const tree = [];
+  const traverse = (id) => {
+    const target = parentChildDict.find((dict) => dict.parent === id);
+    if (!target) return;
+    target.children.forEach((child) => {
+      tree.push(child);
+      traverse(child.id);
+    });
+  };
+  traverse(0);
+  return tree;
+};
+
 const NodeTypes = (() => {
   const TYPES = {
     COMPONENT: "COMPONENT",
@@ -63,11 +89,12 @@ const App = () => {
   const [tree, setTree] = useState([]);
 
   const setNewTree = (newTree) => {
+    const sortedTree = sortTreeNodes(newTree);
     const validHistory = deepCopy(history).slice(0, historyIndex + 1);
-    const newHistory = [...validHistory, deepCopy(newTree)];
+    const newHistory = [...validHistory, deepCopy(sortedTree)];
     setHistory(newHistory);
     setHistoryIndex((prev) => prev + 1);
-    setTree(newTree);
+    setTree(sortedTree);
   };
 
   const revert = () => {
