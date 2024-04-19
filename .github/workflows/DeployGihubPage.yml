@@ -19,7 +19,7 @@ jobs:
       - run: |
           yarn install
           yarn build
-          touch ./out/.nojekyll
+          touch ./dist/.nojekyll
           git config --global user.email "github@example.com"
           git config --global user.name "git workflows"
           git add dist/ -f
