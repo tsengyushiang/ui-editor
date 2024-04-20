@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://github.com/olivierlacan/keep-a
 
 ### Added
 
+- Add editable tree view. (https://github.com/yushiang-demo/ui-editor/pull/1)
+
 ### Changed
 
 ### Fixed
