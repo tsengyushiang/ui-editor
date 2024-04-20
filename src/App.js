@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TreeView from "./components/TreeView";
+import Table from "./components/Table";
 import Typography from "@mui/material/Typography";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -87,8 +88,8 @@ const App = () => {
   const [history, setHistory] = useState([[]]);
   const [tree, setTree] = useState([]);
 
-  const setNewTree = (newTree) => {
-    const sortedTree = sortTreeNodes(newTree);
+  const setNewTree = (newTree, isSort = true) => {
+    const sortedTree = isSort ? sortTreeNodes(newTree) : newTree;
     const validHistory = deepCopy(history).slice(0, historyIndex + 1);
     const newHistory = [...validHistory, deepCopy(sortedTree)];
     setHistory(newHistory);
@@ -118,6 +119,7 @@ const App = () => {
         tree={tree}
         setTree={setNewTree}
       />
+      <Table tree={tree} setTree={setNewTree} />
     </>
   );
 };
