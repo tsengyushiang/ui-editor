@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TreeView from "./components/TreeView";
+import UITree, { TYPES } from "./components/UITree";
 import Typography from "@mui/material/Typography";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -31,30 +32,53 @@ const sortTreeNodes = (newTree) => {
 };
 
 const NodeTypes = (() => {
-  const TYPES = {
-    COMPONENT: "COMPONENT",
-    CONTAINER: "CONTAINER",
-  };
-
+  const TextLink = [
+    {
+      id: "TextLink",
+      parent: 0,
+      type: TYPES.LINK,
+    },
+    {
+      id: "TextLinkContent",
+      parent: "TextLink",
+      type: TYPES.TEXT,
+    },
+  ];
   const types = [
+    ...TextLink,
     {
-      id: "component",
+      id: "Dropdowns",
       parent: 0,
-      type: TYPES.COMPONENT,
+      type: TYPES.DROPDOWNS,
     },
     {
-      id: "container",
+      id: "HorizontalList",
       parent: 0,
-      type: TYPES.CONTAINER,
+      type: TYPES.HORIZONTAL_LIST,
     },
     {
-      id: "container_child",
-      parent: "container",
-      type: TYPES.COMPONENT,
+      id: "Link",
+      parent: 0,
+      type: TYPES.LINK,
+    },
+    {
+      id: "Text",
+      parent: 0,
+      type: TYPES.TEXT,
+    },
+    {
+      id: "VerticalList",
+      parent: 0,
+      type: TYPES.VERTICAL_LIST,
     },
   ];
 
-  const droppableTypes = [TYPES.CONTAINER];
+  const droppableTypes = [
+    TYPES.DROPDOWNS,
+    TYPES.HORIZONTAL_LIST,
+    TYPES.LINK,
+    TYPES.VERTICAL_LIST,
+  ];
   const getNodeOptions = (node) => {
     if (!node) return null;
     const newNode = {
@@ -65,17 +89,9 @@ const NodeTypes = (() => {
     return newNode;
   };
 
-  const Renderer = ({ id, type }) => {
-    if (type === TYPES.COMPONENT) {
-      return <Typography variant="body2">{`component(${id})`}</Typography>;
-    }
-
-    if (type === TYPES.CONTAINER) {
-      return <Typography variant="body2">{`container(${id})`}</Typography>;
-    }
-
-    return `${type} not found`;
-  };
+  const Renderer = ({ id, type }) => (
+    <Typography variant="body2">{`${type}(${id})`}</Typography>
+  );
 
   return { Renderer, getNodeOptions, types };
 })();
@@ -118,6 +134,7 @@ const App = () => {
         tree={tree}
         setTree={setNewTree}
       />
+      <UITree data={tree} />
     </>
   );
 };
