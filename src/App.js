@@ -88,8 +88,8 @@ const App = () => {
   const [history, setHistory] = useState([[]]);
   const [tree, setTree] = useState([]);
 
-  const setNewTree = (newTree) => {
-    const sortedTree = sortTreeNodes(newTree);
+  const setNewTree = (newTree, isSort = true) => {
+    const sortedTree = isSort ? sortTreeNodes(newTree) : newTree;
     const validHistory = deepCopy(history).slice(0, historyIndex + 1);
     const newHistory = [...validHistory, deepCopy(sortedTree)];
     setHistory(newHistory);
@@ -119,7 +119,7 @@ const App = () => {
         tree={tree}
         setTree={setNewTree}
       />
-      <Table data={tree.map((node) => [node.id, node.parent, node.type])} />
+      <Table tree={tree} setTree={setNewTree} />
     </>
   );
 };
