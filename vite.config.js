@@ -4,7 +4,16 @@ import fs from "fs/promises";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      include: /\.(jsx|tsx)$/,
+      babel: {
+        plugins: ["styled-components"],
+        babelrc: false,
+        configFile: false,
+      },
+    }),
+  ],
   esbuild: {
     loader: "jsx",
     include: /src\/.*\.jsx?$/,
